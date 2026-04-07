@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proofix.AI Teaser Deck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #060913;
+            color: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .deck {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 64px 80px;
+            background: radial-gradient(ellipse at 20% 50%, #0a1428 0%, #060913 60%);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 200, 180, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 200, 180, .04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* NAV */
+        .nav {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 100;
+            background: rgba(255, 255, 255, .07);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 40px;
+            padding: 10px 24px;
+        }
+
+        .nav button {
+            background: none;
+            border: none;
+            color: #00c8b4;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            transition: background .2s;
+        }
+
+        .nav button:hover {
+            background: rgba(0, 200, 180, .15);
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .25);
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .dot.active {
+            background: #00c8b4;
+        }
+
+        .slide-counter {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .4);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* TYPE */
+        .tag {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #0ea5e9;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 38px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        p,
+        li {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(241, 245, 249, 0.85);
+        }
+
+        .accent {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .muted {
+            color: rgba(241, 245, 249, 0.45);
+            font-size: 13px;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .col2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            flex: 1;
+            align-items: end;
+        }
+
+        .col3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            padding: 5px 0 5px 18px;
+            position: relative;
+            font-size: 13px;
+        }
+
+        ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #00c8b4;
+            font-size: 11px;
+            top: 7px;
+        }
+
+        /* ── SLIDE 1 COVER ── */
+        .cover {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at 50% 40%, #0b1930 0%, #060913 65%) !important;
+            padding-top: 0;
+        }
+
+        .logo-big {
+            font-size: 96px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+
+        .cover-tagline {
+            font-size: clamp(15px, 2vw, 20px);
+            color: rgba(255, 255, 255, .6);
+            margin-bottom: 28px;
+            max-width: 560px;
+        }
+
+        .cover-stats {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+        }
+
+        .cover-stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 16px;
+        }
+
+        .cover-stat .num {
+            font-size: 52px;
+            font-weight: 800;
+            color: #38bdf8;
+            line-height: 1;
+        }
+
+        .cover-stat .lbl {
+            font-size: 13px;
+            color: rgba(241, 245, 249, 0.55);
+            margin-top: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cover-badge {
+            display: inline-block;
+            padding: 12px 32px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 40px;
+            font-size: 14px;
+            color: rgba(241, 245, 249, 0.7);
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 200, 180, .12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .deck-label {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, .25);
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 20px;
+            padding: 4px 14px;
+        }
+
+        /* ── SLIDE 2 PROBLEM ── */
+        .stat-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        .stat-table th {
+            font-size: 14px;
+            color: #0ea5e9;
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .stat-table td {
+            font-size: 15px;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(241, 245, 249, 0.8);
+        }
+
+        .stat-table tr.highlight td {
+            background: rgba(0, 200, 180, .06);
+        }
+
+        .stat-table tr.highlight td:nth-child(2) {
+            color: #00c8b4;
+            font-weight: 700;
+        }
+
+        .stat-table td:nth-child(2) {
+            color: rgba(0, 200, 180, .8);
+            font-weight: 600;
+        }
+
+        /* ── SLIDE 3 COMPARE ── */
+        .compare {
+            display: flex;
+            gap: 24px;
+            margin-top: 10px;
+            align-items: stretch;
+        }
+
+        .compare .card {
+            flex: 1;
+        }
+
+        .compare .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .compare .card li {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .compare .old h3 {
+            color: #ef4444;
+        }
+
+        .real-case {
+            margin-top: 20px;
+            background: rgba(234, 179, 8, 0.05);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            color: rgba(241, 245, 249, 0.75);
+            line-height: 1.5;
+        }
+
+        .real-case span {
+            color: #eab308;
+            font-weight: 600;
+        }
+
+        /* ── SLIDE 4 MECHANISM ── */
+        .flywheel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .fw-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .fw-num {
+            font-size: 48px;
+            font-weight: 800;
+            color: #38bdf8;
+            line-height: 1;
+            min-width: 60px;
+        }
+
+        .fw-item h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .fw-item p {
+            font-size: 18px;
+            line-height: 1.5;
+            color: rgba(241, 245, 249, 0.9);
+        }
+
+        .dynamic-bar {
+            margin-top: 24px;
+            padding: 24px 32px;
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 500;
+            color: rgba(241, 245, 249, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dynamic-bar .arr {
+            color: #38bdf8;
+        }
+
+        /* ── SLIDE 5 CASE ── */
+        .tl-item {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .tl-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #38bdf8;
+            flex-shrink: 0;
+            z-index: 2;
+            margin-top: 4px;
+        }
+
+        .tl-connector {
+            width: 3px;
+            background: rgba(56, 189, 248, 0.3);
+            margin: 0;
+            z-index: 1;
+            align-self: center;
+        }
+
+        .tl-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #38bdf8;
+            white-space: nowrap;
+            min-width: 100px;
+            margin-top: 4px;
+        }
+
+        .tl-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .tl-text {
+            font-size: 18px;
+            color: rgba(241, 245, 249, 0.85);
+            margin-top: 4px;
+            line-height: 1.6;
+        }
+
+        .disclaimer {
+            font-size: 15px;
+            color: rgba(241, 245, 249, 0.4);
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+
+        .real-incident {
+            padding: 32px;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            height: fit-content;
+        }
+
+        .ri-label {
+            font-size: 16px;
+            color: #38bdf8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .real-incident p {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        .card h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card p {
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        /* ── SLIDE 6 GOALS ── */
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 17px;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-val {
+            color: #38bdf8;
+            font-weight: 700;
+            font-size: 19px;
+            margin-right: 6px;
+        }
+
+        .metric-time {
+            color: rgba(241, 245, 249, 0.4);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .vision-p {
+            font-size: 19px;
+            line-height: 1.5;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .partnership-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .partnership-list li {
+            font-size: inherit;
+            margin-bottom: 8px;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .partnership-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #38bdf8;
+        }
+
+        .cta-bar {
+            margin-top: auto;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(14, 165, 233, 0.15));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            font-size: 20px;
+            color: rgba(241, 245, 249, 0.9);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* ── SLIDE 7 WHY NOW ── */
+        .why-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .why-item {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            border-radius: 12px;
+            padding: 12px 18px;
+        }
+
+        .why-item h3 {
+            font-size: 19px;
+            margin-bottom: 2px;
+            color: #38bdf8;
+        }
+
+        .why-item p {
+            font-size: 15px;
+            line-height: 1.4;
+            color: rgba(241, 245, 249, 0.8);
+        }
+
+        .why-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        /* FINAL CTA */
+        .final-cta {
+            margin-top: 12px;
+            margin-bottom: 0px;
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+            flex: 1;
+        }
+
+        .cta-box {
+            flex: 1;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cta-box.primary {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.1));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .cta-box.secondary {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+
+        .cta-box .cta-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+
+        .cta-box .cta-desc {
+            font-size: 14px;
+            color: rgba(241, 245, 249, 0.8);
+            line-height: 1.4;
+        }
+
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            body {
+                overflow: visible;
+                background: #060913;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .deck {
+                width: 100%;
+                height: auto;
+            }
+
+            .slide {
+                position: relative !important;
+                display: flex !important;
+                width: 100vw;
+                height: 100vh;
+                page-break-after: always;
+                break-after: page;
+                padding: 64px 80px;
+            }
+
+            .nav,
+            .deck-label {
+                display: none !important;
+            }
+        }
+
+        /* ── MOBILE RESPONSIVENESS ── */
+        @media screen and (max-width: 768px) {
+            .slide {
+                padding: 40px 24px 100px 24px;
+                justify-content: flex-start;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            h2 {
+                font-size: 26px;
+                margin-bottom: 12px;
+            }
+
+            p,
+            li {
+                font-size: 15px;
+            }
+
+            .logo-big {
+                font-size: 64px;
+            }
+
+            .col2,
+            .col3,
+            .flywheel,
+            .why-grid,
+            .compare,
+            .cover-stats,
+            .final-cta {
+                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .cover-stat .num {
+                font-size: 38px;
+            }
+
+            .cover-stat {
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .cover-stat:last-child {
+                border-bottom: none;
+            }
+
+            .fw-num {
+                font-size: 32px;
+                min-width: 40px;
+            }
+
+            .fw-item {
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .fw-item h3 {
+                font-size: 18px;
+            }
+
+            .tl-item {
+                gap: 12px;
+            }
+
+            .tl-title {
+                font-size: 18px;
+            }
+
+            .tl-label {
+                min-width: 70px;
+                font-size: 14px;
+            }
+
+            .tl-text {
+                font-size: 15px;
+            }
+
+            .nav {
+                width: 90%;
+                padding: 8px 16px;
+                bottom: 16px;
+            }
+
+            .nav button {
+                font-size: 22px;
+                padding: 8px 12px;
+            }
+
+            .slide-counter {
+                font-size: 14px;
+            }
+
+            .cta-box .cta-title {
+                font-size: 16px;
+            }
+
+            .cta-box .cta-desc {
+                font-size: 13px;
+            }
+
+            .cta-bar {
+                font-size: 16px;
+                padding: 16px;
+            }
+
+            .stat-table th,
+            .stat-table td {
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .real-case {
+                padding: 12px 16px;
+                font-size: 14px;
+                flex-direction: column;
+            }
+
+            .dynamic-bar {
+                font-size: 16px;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="deck">
+
+        <!-- SLIDE 1: COVER -->
+        <div class="slide cover active">
+            <div class="deck-label">Teaser Deck · 2025</div>
+            <div class="orb" style="width:520px;height:520px;top:-120px;right:-120px;"></div>
+            <div class="orb" style="width:300px;height:300px;bottom:-80px;left:-60px;"></div>
+            <div class="tag">Data Verification · AI · Institutional Markets</div>
+            <div class="logo-big">Proofix.AI</div>
+            <div class="cover-tagline">Mathematical standard of truth for financial markets</div>
+            <div class="cover-stats">
+                <div class="cover-stat">
+                    <div class="num">$78B</div>
+                    <div class="lbl">annual loss from misinformation</div>
+                </div>
+                <div class="cover-stat">
+                    <div class="num">×7.5</div>
+                    <div class="lbl">growth of AI-threats by 2026</div>
+                </div>
+                <div class="cover-stat">
+                    <div class="num">#1</div>
+                    <div class="lbl">global risk by WEF 2025</div>
+                </div>
+            </div>
+            <div class="cover-badge">Data Verification · AI Trust Graph · Capital Protection</div>
+        </div>
+
+        <!-- SLIDE 2: PROBLEM -->
+        <div class="slide">
+            <div class="tag">Problem</div>
+            <h2>The Era of Information Uncertainty</h2>
+            <p style="margin-bottom:14px;">Misinformation is not just a media problem. It is a <span
+                    class="accent">systemic financial risk</span> with measurable damage growing every year.</p>
+            <div class="col2" style="gap:16px;">
+                <div>
+                    <div class="card" style="margin-bottom:14px;">
+                        <h3>Threat Scale — Dynamics</h3>
+                        <table class="stat-table">
+                            <tr>
+                                <th>Year</th>
+                                <th>Damage</th>
+                                <th>Source</th>
+                            </tr>
+                            <tr>
+                                <td>2019</td>
+                                <td>$78B / year</td>
+                                <td>CHEQ / Univ. of Baltimore</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>2024</td>
+                                <td>$26.3B (AI only)</td>
+                                <td>The Quantum Institute</td>
+                            </tr>
+                            <tr>
+                                <td>2024</td>
+                                <td>$450K / incident</td>
+                                <td>Regula Survey</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>2025</td>
+                                <td>#1 Global Risk</td>
+                                <td>WEF Global Risks Report</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card" style="font-size: 15px;">
+                        <h3>Consequences</h3>
+                        <ul class="partnership-list">
+                            <li>Decision Paralysis — Fact indistinguishable from fake</li>
+                            <li>Capital Stagnation — Uncertainty freezes liquidity</li>
+                            <li>$10M+ losses in a single incident for institutionals</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card"
+                    style="display:flex;flex-direction:column;justify-content:center; height: 100%; font-size: 15px;">
+                    <h3>Proofix.AI Solution</h3>
+                    <p style="margin-bottom:14px;">We introduce a <span class="accent">mathematical standard of
+                            truth.</span> Automatic data verification restores the market's ability to act.</p>
+                    <ul class="partnership-list">
+                        <li>Real-time cryptographic verification with exchanges</li>
+                        <li>AI Trust Graph forms an objective reliability rating</li>
+                        <li>Reputation becomes a liquid asset</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: OLD → NEW -->
+        <div class="slide">
+            <div class="tag">Context</div>
+            <h2>Old World → New World</h2>
+            <p style="margin-bottom:10px;">Transitioning from "trusting opinions" to "verifying facts". Proofix shifts
+                decision-making to a verifiable basis.</p>
+            <div class="compare">
+                <div class="card old">
+                    <h3>⚠ Current Reality</h3>
+                    <ul>
+                        <li>Anonymous accounts and paid bots</li>
+                        <li>Logic: "I think, let's open a position"</li>
+                        <li>Risk: Manipulation, exit liquidity</li>
+                        <li>Result: $78B in systemic annual losses</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>✓ Proofix Reality</h3>
+                    <ul>
+                        <li>Cryptographically verified identities</li>
+                        <li>Logic: "The exchange confirms the data"</li>
+                        <li>Risk: Transparent and verifiable signals</li>
+                        <li>Result: Preserved capital, trust as an asset</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="real-case" style="margin-top:12px;">
+                <span>Real Cases:</span> May 2023 — An AI-generated photo of an "explosion at the Pentagon" crashed the
+                S&P 500 in minutes. January 2024 — A hack of the SEC's X account moved the Bitcoin market on a false ETF
+                announcement. This is exactly the class of events that Proofix prevents.
+                <div class="muted" style="margin-top:4px;">Sources: AP, Reuters (May 2023) · Bloomberg, Reuters (January
+                    2024)</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: MECHANISM -->
+        <div class="slide">
+            <div class="tag">Technology</div>
+            <h2>Proofix Mechanism — The Mathematical Flywheel <br> of Truth</h2>
+            <p style="margin-bottom:4px;">To maintain a resilient ecosystem of verified signals, our flywheel combines
+                four layers:</p>
+            <div class="flywheel">
+                <div class="fw-item">
+                    <div class="fw-num">01</div>
+                    <div>
+                        <h3>Direct Data Sync</h3>
+                        <p>AI audit of signals and posts in real-time — before they impact the
+                            market.</p>
+                    </div>
+                </div>
+                <div class="fw-item">
+                    <div class="fw-num">02</div>
+                    <div>
+                        <h3>Verification</h3>
+                        <p>Cryptographic data synchronization directly with exchanges. Not
+                            interpretation — mathematical proof.</p>
+                    </div>
+                </div>
+                <div class="fw-item">
+                    <div class="fw-num">03</div>
+                    <div>
+                        <h3>AI Trust Graph</h3>
+                        <p>Objective reliability rating based on a participant's verified
+                            history.</p>
+                    </div>
+                </div>
+                <div class="fw-item">
+                    <div class="fw-num">04</div>
+                    <div>
+                        <h3>Monetize Reputation</h3>
+                        <p>Reputation becomes a liquid asset. High Trust Score = higher signal
+                            value.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dynamic-bar">
+                <span style="color:#00c8b4;font-weight:600;margin-right:6px;">Flywheel:</span>
+                More verified data
+                <span class="arr">→</span> More accurate Trust Score
+                <span class="arr">→</span> More valuable signal
+                <span class="arr">→</span> More participants
+                <span class="arr">→</span> More data again
+            </div>
+        </div>
+
+        <!-- SLIDE 5: CASE -->
+        <div class="slide">
+            <div class="tag">How It Works</div>
+            <h2>How Proofix Protects Capital — Operational Case</h2>
+            <div class="disclaimer">* Illustrative scenario based on real documented incidents</div>
+            <div class="col2" style="gap:18px;align-items:start;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div class="tl-item">
+                        <div style="display:flex;flex-direction:column;align-items:center;min-width:30px;">
+                            <div class="tl-dot"></div>
+                            <div class="tl-connector" style="height: 60px;"></div>
+                        </div>
+                        <div>
+                            <div class="tl-label">T-0: Noise</div>
+                            <div class="tl-title">Viral Signal</div>
+                            <div class="tl-text">Tweet: "Fund is liquidating". Market panic-selling.</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div style="display:flex;flex-direction:column;align-items:center;min-width:30px;">
+                            <div class="tl-dot"></div>
+                            <div class="tl-connector" style="height: 60px;"></div>
+                        </div>
+                        <div>
+                            <div class="tl-label">T+1 min</div>
+                            <div class="tl-title">Audit</div>
+                            <div class="tl-text">Proofix verifies the statement against on-chain data and exchange
+                                wallets.</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div style="display:flex;flex-direction:column;align-items:center;min-width:30px;">
+                            <div class="tl-dot"></div>
+                            <div class="tl-connector" style="height: 60px;"></div>
+                        </div>
+                        <div>
+                            <div class="tl-label">T+2 min</div>
+                            <div class="tl-title">Truth Layer</div>
+                            <div class="tl-text">Signal flagged as "Unverified / Manipulation" in user feeds.</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div style="display:flex;flex-direction:column;align-items:center;min-width:30px;">
+                            <div class="tl-dot" style="background:#ffc107;"></div>
+                        </div>
+                        <div>
+                            <div class="tl-label" style="color:#ffc107;">T+5 min</div>
+                            <div class="tl-title">Result</div>
+                            <div class="tl-text">Users preserve positions or arbitrage the panic — <span
+                                    class="accent">collective protection of $10M+ in a single event.</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="card">
+                        <div class="ri-label">Real Equivalent — January 2024</div>
+                        <p style="font-size: 21px; line-height: 1.6; color: #ffffff;">Hackers compromised the SEC's X
+                            account, falsely announcing Bitcoin
+                            ETF approval. BTC spiked, then crashed after debunking. Retail investors suffered direct
+                            losses.</p>
+                        <div class="muted" style="margin-top:12px; font-size: 15px;">Source: Reuters, Bloomberg —
+                            January 2024</div>
+                    </div>
+                    <div class="card">
+                        <div class="ri-label">Key Advantage</div>
+                        <p style="font-size: 21px; line-height: 1.6; color: #ffffff;">The first 5 minutes after a signal
+                            are the most expensive. Proofix
+                            operates precisely there: the speed of automated validation mitigates impulsive decisions
+                            for institutional players.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: MARKET SIZING -->
+        <div class="slide">
+            <div class="tag">Market Sizing</div>
+            <h2>The Opportunity Market: Cost of Uncertainty</h2>
+            <p style="margin-bottom:14px;">The total economic damage from misinformation forms the basis of our
+                addressable market.</p>
+            <div class="col3" style="gap:24px; margin-top:12px;">
+                <div class="card">
+                    <h3>TAM (Total Addressable)</h3>
+                    <div style="font-size:42px; font-weight:800; color:#38bdf8; line-height:1; margin-bottom:12px;">
+                        $78.0B</div>
+                    <p style="font-size:16px;">Global annual damage from misinformation on financial markets.</p>
+                </div>
+                <div class="card">
+                    <h3>SAM (Serviceable)</h3>
+                    <div style="font-size:42px; font-weight:800; color:#38bdf8; line-height:1; margin-bottom:12px;">
+                        $29.2B</div>
+                    <p style="font-size:16px;">Direct damage from AI-threats + capacity of corporate budgets for
+                        protection.</p>
+                </div>
+                <div class="card" style="border-color:#38bdf8; background:rgba(56,189,248,0.1);">
+                    <h3>SOM (Obtainable)</h3>
+                    <div style="font-size:42px; font-weight:800; color:#00c8b4; line-height:1; margin-bottom:12px;">
+                        $133.5M</div>
+                    <p style="font-size:16px;">Target capture (~0.45% of SAM) in 3 years. <span class="accent">3.26M
+                            active users</span> via API and direct B2C channels.</p>
+                </div>
+            </div>
+            <div class="real-case" style="margin-top:24px; display:flex; gap:16px; align-items:center;">
+                <div style="flex:1;">
+                    <span style="color:#eab308; font-weight:600; display:block; margin-bottom:4px;">Two validation
+                        methods:</span>
+                    <p style="font-size:15px; margin:0;">Calculated by Top-Down (macro problem size) and Bottom-Up
+                        (physical sales reach), both converging to ~$133.5M ARR.</p>
+                </div>
+                <div style="flex:1;">
+                    <ul class="partnership-list" style="margin:0;">
+                        <li style="font-size:15px; margin-bottom:4px;">Hardwareless API-driven validation model</li>
+                        <li style="font-size:15px;">Revenue Share and B2C/B2B2C Subscription Tiers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: VALUATION & ASK -->
+        <div class="slide">
+            <div class="tag">Valuation & Ask</div>
+            <h2>Investment Thesis & Valuation Justification</h2>
+            <div class="col2" style="margin-top:12px; gap:24px; align-items:stretch;">
+                <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+                    <h3 style="color:#ffffff; font-size:24px; margin-bottom:8px;">The Ask</h3>
+                    <div style="font-size:58px; font-weight:800; color:#00c8b4; line-height:1; margin-bottom:8px;">$1.0M
+                    </div>
+                    <div style="font-size:20px; color:#38bdf8; font-weight:600; margin-bottom:24px;">for 10% Equity
+                        (Safe / Priced Round)</div>
+                    <p style="font-size:18px;">Pre-Money Valuation: <strong
+                            style="color:#fff;">$9.0M</strong><br>Post-Money Valuation: <strong
+                            style="color:#fff;">$10.0M</strong></p>
+                    <div
+                        style="margin-top:24px; padding:16px; background:rgba(0,200,180,0.1); border:1px solid rgba(0,200,180,0.3); border-radius:8px;">
+                        <p style="font-size:16px; color:#00c8b4; font-weight:600;">$1M investment at $9M pre-money is
+                            entry into a market where even a 75% failure to meet the plan ensures a 30x return for the
+                            investor.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:12px;">Pre-Revenue Valuation Models</h3>
+                    <p style="font-size:15px; margin-bottom:16px; color:rgba(241,245,249,0.8);">Validated via 4
+                        independent methodologies confirming the entry point:</p>
+                    <table class="stat-table">
+                        <tr>
+                            <th>Method</th>
+                            <th>Valuation</th>
+                            <th>Rationale</th>
+                        </tr>
+                        <tr>
+                            <td>VC Method</td>
+                            <td style="color:#38bdf8;">$9.00M</td>
+                            <td>$133.5M ARR exit justifies up to ~30x return.</td>
+                        </tr>
+                        <tr>
+                            <td>Scorecard</td>
+                            <td style="color:#38bdf8;">~$8.00M</td>
+                            <td>Baseline $10M adjusted for massive TAM and Moat.</td>
+                        </tr>
+                        <tr>
+                            <td>Risk Factor</td>
+                            <td style="color:#38bdf8;">$3.0M - $4.0M</td>
+                            <td>Tech & Market risks mitigated; residual team risk.</td>
+                        </tr>
+                        <tr>
+                            <td>Berkus</td>
+                            <td style="color:#38bdf8;">$2.35M</td>
+                            <td>Institutional baseline floor value for Idea & GTM.</td>
+                        </tr>
+                    </table>
+                    <div class="muted" style="margin-top:16px; font-size:14px;">Summary: $9.0M implies an optimal entry
+                        price with built-in margin of safety prior to exponential scale.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: GOALS -->
+        <div class="slide">
+            <div class="tag">Goals & Partnership</div>
+            <h2>Aims, Vision and Invitation</h2>
+            <div class="col3" style="margin-top:14px;">
+                <div class="card">
+                    <h3>MVP Goals <span class="muted">(6–12 months)</span></h3>
+                    <div class="metric"><span>MAU</span><span><span class="metric-val">1,000</span><span
+                                class="metric-time">Q3 2026</span></span></div>
+                    <div class="metric"><span>Engagement</span><span><span class="metric-val">&gt;40%</span><span
+                                class="metric-time">Q3 2026</span></span></div>
+                    <div class="metric"><span>Decision Influence</span><span><span
+                                class="metric-val">&gt;25%</span><span class="metric-time">Q4 2026</span></span></div>
+                    <div class="metric"><span>NPS</span><span><span class="metric-val">&gt;30</span><span
+                                class="metric-time">Q4 2026</span></span></div>
+                </div>
+                <div class="card">
+                    <h3>Partnership</h3>
+                    <ul class="partnership-list">
+                        <li>API integration with major exchanges</li>
+                        <li>Pilot program for institutional clients</li>
+                        <li>Regulatory pilot (FCA / SEC-compliant format)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Vision</h3>
+                    <p class="vision-p">A world where reality is not a matter of
+                        opinion, but a
+                        matter of <span class="accent">mathematical proof.</span></p>
+                    <div
+                        style="margin-top:20px; padding: 16px; background: rgba(56, 189, 248, 0.05); border-left: 4px solid #38bdf8; border-radius: 4px;">
+                        <span
+                            style="color:#38bdf8; font-weight:700; font-size: 17px; display: block; margin-bottom: 6px;">WEF
+                            2025 ALERT:</span>
+                        <p style="font-size:16px; color:rgba(255,255,255,0.7); line-height: 1.4;">Misinformation is the
+                            <span style="color: #ffffff; font-weight: 700;">#1
+                                GLOBAL RISK</span> for two consecutive years. The window is open now.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="cta-bar" style="margin-top:32px;">
+                🔗 <a href="https://proofix-landing.vercel.app/" target="_blank"
+                    style="color: inherit; text-decoration: none; font-weight: 700; border-bottom: 2px solid #38bdf8;">Join
+                    us: Building the infrastructure of inevitability — Proofix.ai</a>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: WHY NOW -->
+        <div class="slide">
+            <div class="tag">Investment Thesis</div>
+            <h2>Why Now — And Why Proofix</h2>
+            <div class="why-grid">
+                <div class="why-item">
+                    <div class="why-icon">⚡</div>
+                    <h3>Regulatory Window Moment</h3>
+                    <p>SEC, FCA, and MiCA are actively shaping verification standards. Those who
+                        build the infrastructure now will become the de-facto industry standard.</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">📈</div>
+                    <h3>7.5x Threat Growth by 2026</h3>
+                    <p>The volume of AI-misinformation campaigns against financial markets is
+                        projected to grow by 750% by 2026. The demand for verification will only accelerate.</p>
+                    <div class="muted" style="margin-top:8px;">Source: The Quantum Institute, 2024</div>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🏗</div>
+                    <h3>Infrastructural Positioning</h3>
+                    <p>Proofix is not an analytical tool. It is the trust layer between data and
+                        decision. Infrastructure layers tend to become monopolies.</p>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon">🔄</div>
+                    <h3>Flywheel Network Effect</h3>
+                    <p>Each new participant improves Trust Score accuracy for everyone. The
+                        system becomes more valuable with scale — a classic network effect.</p>
+                </div>
+            </div>
+
+            <div class="final-cta">
+                <div class="cta-box primary">
+                    <div class="cta-title">📄 For Investors & Funds</div>
+                    <div class="cta-desc">Full Investor Deck, Financial Model and Whitepaper — available upon
+                        request.<br>This is the next level of dialogue.</div>
+                </div>
+                <div class="cta-box secondary">
+                    <div class="cta-title">🤝 For Partners & Exchanges</div>
+                    <div class="cta-desc">Technical brief and API integration terms available for qualified partners.
+                    </div>
+                </div>
+                <div class="cta-box secondary">
+                    <div class="cta-title">🚀 For Team & Advisors</div>
+                    <div class="cta-desc">Open positions for experts in data verification, crypto-regulation and
+                        institutional sales.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav">
+        <button id="prev">←</button>
+        <div class="dots" id="dots"></div>
+        <button id="next">→</button>
+        <div class="slide-counter" id="counter">1 / 9</div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dotsEl = document.getElementById('dots');
+        const counter = document.getElementById('counter');
+        let cur = 0;
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.onclick = () => go(i);
+            dotsEl.appendChild(d);
+        });
+        function go(n) {
+            slides[cur].classList.remove('active');
+            dotsEl.children[cur].classList.remove('active');
+            cur = (n + slides.length) % slides.length;
+            slides[cur].classList.add('active');
+            dotsEl.children[cur].classList.add('active');
+            counter.textContent = `${cur + 1} / ${slides.length}`;
+        }
+        document.getElementById('prev').onclick = () => go(cur - 1);
+        document.getElementById('next').onclick = () => go(cur + 1);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+        });
+    </script>
+</body>
+
+</html>
